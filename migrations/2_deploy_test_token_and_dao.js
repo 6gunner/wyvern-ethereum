@@ -6,16 +6,15 @@ const TestStatic = artifacts.require('./TestStatic.sol')
 
 const { setConfig } = require('./config.js')
 
-module.exports = (deployer, network) => {
+module.exports = async (deployer, network) => {
   if (network === 'main') return
-  deployer.deploy(TestToken)
-    .then(() => {
-      setConfig('deployed.' + network + '.TestToken', TestToken.address)
-      return deployer.deploy(TestDAO, TestToken.address).then(() => {
-        setConfig('deployed.' + network + '.TestDAO', TestDAO.address)
-        return deployer.deploy(TestStatic).then(() => {
-          setConfig('deployed.' + network + '.TestStatic', TestStatic.address)
-        })
-      })
-    })
+  await deployer.deploy(TestToken)
+  const testToken = await TestToken.deployed()
+  setConfig('deployed.' + network + '.TestToken', testToken.address)
+  await deployer.deploy(TestDAO, TestToken.address)
+  const testDao = await TestDAO.deployed()
+  setConfig('deployed.' + network + '.TestDAO', testDao.address)
+        // return deployer.deploy(TestStatic).then(() => {
+        //   setConfig('deployed.' + network + '.TestStatic', TestStatic.address)
+        // })
 }
