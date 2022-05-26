@@ -5,3 +5,5 @@ temp/
 encode.js
 proposal.js
 test.js
+.env
+.DS_Store
